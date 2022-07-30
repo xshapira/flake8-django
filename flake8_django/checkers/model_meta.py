@@ -18,19 +18,21 @@ class ModelMetaChecker(BaseModelChecker):
     model_name_lookup = 'Model'
 
     def checker_applies(self, node):
-        for base in node.bases:
-            if self.is_model_name_lookup(base) or self.is_models_name_lookup_attribute(base):
-                if not self.is_abstract_model(node):
-                    return True
-        return False
+        return any(
+            (
+                self.is_model_name_lookup(base)
+                or self.is_models_name_lookup_attribute(base)
+            )
+            and not self.is_abstract_model(node)
+            for base in node.bases
+        )
 
     @staticmethod
     def has_meta_class(element):
         # for node in element.body[0].body:  # type: ignore
         for node in element.body:  # type: ignore
-            if isinstance(node, ast.ClassDef):
-                if node.name == 'Meta':
-                    return node
+            if isinstance(node, ast.ClassDef) and node.name == 'Meta':
+                return node
         return
 
     def has_verbose_name(self, meta_class_node):

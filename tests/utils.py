@@ -27,7 +27,4 @@ def error_code_in_result(error_code, result):
     :param result:
     :return:
     """
-    for element in result:
-        if error_code in element[2]:
-            return True
-    return False
+    return any(error_code in element[2] for element in result)
