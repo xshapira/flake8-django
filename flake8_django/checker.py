@@ -38,8 +38,7 @@ class DjangoStyleFinder(ast.NodeVisitor):
 
     def capture_issues_visitor(self, visitor, node):
         for checker in self.checkers[visitor]:
-            issues = checker.run(node)
-            if issues:
+            if issues := checker.run(node):
                 self.issues.extend(issues)
         self.generic_visit(node)
 

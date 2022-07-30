@@ -17,13 +17,12 @@ class RenderChecker(Checker):
         """
         if self.get_call_name(node) != 'render':
             return
-        issues = []
-        for arg in node.args:
-            if isinstance(arg, ast.Call) and getattr(arg.func, 'id', '') == 'locals':
-                issues.append(
-                    DJ03(
-                        lineno=node.lineno,
-                        col=node.col_offset,
-                    )
-                )
-        return issues
+        return [
+            DJ03(
+                lineno=node.lineno,
+                col=node.col_offset,
+            )
+            for arg in node.args
+            if isinstance(arg, ast.Call)
+            and getattr(arg.func, 'id', '') == 'locals'
+        ]

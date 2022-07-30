@@ -19,8 +19,9 @@ class ModelFormChecker(BaseModelChecker):
 
     def checker_applies(self, node):
         for base in node.bases:
-            is_model_form = self.is_model_name_lookup(base) or self.is_models_name_lookup_attribute(base)
-            if is_model_form:
+            if is_model_form := self.is_model_name_lookup(
+                base
+            ) or self.is_models_name_lookup_attribute(base):
                 return True
         return False
 

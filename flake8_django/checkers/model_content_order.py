@@ -75,10 +75,11 @@ class ModelContentOrderChecker(BaseModelChecker):
     ]
 
     def checker_applies(self, node):
-        for base in node.bases:
-            if self.is_model_name_lookup(base) or self.is_models_name_lookup_attribute(base):
-                return True
-        return False
+        return any(
+            self.is_model_name_lookup(base)
+            or self.is_models_name_lookup_attribute(base)
+            for base in node.bases
+        )
 
     def run(self, node):
         if not self.checker_applies(node):
@@ -93,8 +94,9 @@ class ModelContentOrderChecker(BaseModelChecker):
             if not element_type:
                 continue
 
-            element_type_in_wrong_order = self.find_element_type_in_wrong_order(element_type, elements_type_found)
-            if element_type_in_wrong_order:
+            if element_type_in_wrong_order := self.find_element_type_in_wrong_order(
+                element_type, elements_type_found
+            ):
                 yield DJ12(
                     element,
                     element_type,
